@@ -9,13 +9,15 @@ fn main() {
         return;
     }
 
-    let _path = match args.get(1) {
+    let target = match args.get(1) {
         Some(elem) => elem,
         None => {
             println!("Failure get filepath");
             return;
         }
     };
+
+
 
     println!("Args {:?}", args);
 }
