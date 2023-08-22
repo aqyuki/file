@@ -1,10 +1,9 @@
-extern crate chrono;
 use chrono::{
     prelude::{DateTime, Datelike, Utc},
     Timelike,
 };
 
-use std::{env, fs::File, path::Path};
+use std::{env, fs::File, os::windows::prelude::MetadataExt, path::Path};
 
 fn main() {
     // Get command line arguments
@@ -43,7 +42,10 @@ fn main() {
     let created_utc: DateTime<Utc> = info.created().unwrap().into();
     let created_at = format_utc_to_string(&created_utc);
 
-    println!("Created At : {}", created_at)
+    let file_size = info.file_size();
+
+    println!("Created At : {}", created_at);
+    println!("File Size : {}", file_size);
 }
 
 fn format_utc_to_string(utc_time: &DateTime<Utc>) -> String {
