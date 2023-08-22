@@ -22,8 +22,11 @@ fn main() {
         }
     };
 
-    // Check file exist
     let path = Path::new(&target);
+    show_file_info(&path)
+}
+
+fn show_file_info(path: &Path) {
     if !path.is_file() {
         println!("Could not find target file.");
         return;
