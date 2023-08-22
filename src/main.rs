@@ -1,4 +1,10 @@
-use std::{env, path::Path};
+extern crate chrono;
+use chrono::{
+    prelude::{DateTime, Datelike, Utc},
+    Timelike,
+};
+
+use std::{env, fs::File, path::Path};
 
 fn main() {
     // Get command line arguments
@@ -18,11 +24,36 @@ fn main() {
     };
 
     // Check file exist
-    let path = Path::new(target);
+    let path = Path::new(&target);
     if !path.is_file() {
         println!("Could not find target file.");
         return;
     }
 
-    println!("Args {:?}", args);
+    let file = match File::open(&path) {
+        Ok(file) => file,
+        Err(why) => {
+            println!("Failure open file {}", why);
+            std::process::exit(-1);
+        }
+    };
+
+    let info = file.metadata().unwrap();
+
+    let created_utc: DateTime<Utc> = info.created().unwrap().into();
+    let created_at = format_utc_to_string(&created_utc);
+
+    println!("Created At : {}", created_at)
+}
+
+fn format_utc_to_string(utc_time: &DateTime<Utc>) -> String {
+    format!(
+        "{}-{:02}-{:02} {:02}:{:02}:{:02}",
+        utc_time.year(),
+        utc_time.month(),
+        utc_time.day(),
+        utc_time.hour(),
+        utc_time.minute(),
+        utc_time.second(),
+    )
 }
