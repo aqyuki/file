@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, path::Path};
 
 fn main() {
     // Get command line arguments
@@ -17,7 +17,12 @@ fn main() {
         }
     };
 
-
+    // Check file exist
+    let path = Path::new(target);
+    if !path.is_file() {
+        println!("Could not find target file.");
+        return;
+    }
 
     println!("Args {:?}", args);
 }
