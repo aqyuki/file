@@ -3,7 +3,7 @@ use chrono::{
     Timelike,
 };
 
-use std::{env, fs::File, os::windows::prelude::MetadataExt, path::Path};
+use std::{env, os::windows::prelude::MetadataExt, path::Path};
 
 fn main() {
     // Get command line arguments
@@ -29,15 +29,13 @@ fn main() {
         return;
     }
 
-    let file = match File::open(&path) {
+    let info = match std::fs::metadata(&path) {
         Ok(file) => file,
         Err(why) => {
             println!("Failure open file {}", why);
             std::process::exit(-1);
         }
     };
-
-    let info = file.metadata().unwrap();
 
     let created_utc: DateTime<Utc> = info.created().unwrap().into();
     let created_at = format_utc_to_string(&created_utc);
