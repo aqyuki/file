@@ -3,7 +3,8 @@ use chrono::{
     Timelike,
 };
 
-use std::{env, os::windows::prelude::MetadataExt, path::Path};
+use colored::*;
+use std::{env, os::windows::prelude::MetadataExt, path::PathBuf};
 
 fn main() {
     // Get command line arguments
@@ -22,11 +23,11 @@ fn main() {
         }
     };
 
-    let path = Path::new(&target);
+    let path = PathBuf::from(&target);
     show_file_info(&path)
 }
 
-fn show_file_info(path: &Path) {
+fn show_file_info(path: &PathBuf) {
     if !path.is_file() {
         println!("Could not find target file.");
         return;
@@ -40,11 +41,23 @@ fn show_file_info(path: &Path) {
         }
     };
 
+    let parent_directory = match path.parent() {
+        Some(parent) => parent.to_str().unwrap().normal(),
+        None => "No information".red(),
+    };
+
+    let file_name = match path.file_name() {
+        Some(name) => name.to_str().unwrap().normal(),
+        None => "Failure get file name".red(),
+    };
+
     let created_utc: DateTime<Utc> = info.created().unwrap().into();
-    let created_at = format_utc_to_string(&created_utc);
+    let created_at = format_utc_to_string(&created_utc).green();
 
-    let file_size = info.file_size();
+    let file_size = info.file_size().to_string().blue();
 
+    println!("Parent Directory : {}", parent_directory);
+    println!("File Name : {}", file_name);
     println!("Created At : {}", created_at);
     println!("File Size : {}", file_size);
 }
